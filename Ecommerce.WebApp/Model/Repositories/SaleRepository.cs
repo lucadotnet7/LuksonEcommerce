@@ -18,11 +18,11 @@ namespace Ecommerce.WebApp.Model.Repositories
             {
                 try
                 {
-                    foreach (DetalleVenta dv in sale.DetalleVenta)
+                    foreach (DetalleVenta saleDetail in sale.DetalleVenta)
                     {
-                        Producto product = _context.Productos.Where(p => p.IdProducto == dv.IdProducto).First();
+                        Producto product = _context.Productos.Where(p => p.IdProducto == saleDetail.IdProducto).First();
 
-                        product.Cantidad -= dv.Cantidad;
+                        product.Cantidad -= saleDetail.Cantidad;
                         _context.Productos.Update(product);
                     }
 
