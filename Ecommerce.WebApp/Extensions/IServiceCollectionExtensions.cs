@@ -1,4 +1,7 @@
-﻿using Ecommerce.WebApp.Model;
+﻿using Ecommerce.WebApp.Business.Interfaces;
+using Ecommerce.WebApp.Business.Services;
+using Ecommerce.WebApp.Business.Utils.Mappers;
+using Ecommerce.WebApp.Model;
 using Ecommerce.WebApp.Model.Interfaces;
 using Ecommerce.WebApp.Model.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.DbConnection();
             services.EcommerceInjectionDependency();
+            services.RegisterAutoMapper();
         }
 
         private static void DbConnection(this IServiceCollection services)
@@ -32,6 +36,17 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ISaleRepository, SaleRepository>();
+
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ISaleService, SaleService>();
+            services.AddScoped<IUserService, UserService>();
+        }
+
+        private static void RegisterAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(AutoMapperProfile));
         }
     }
 }
