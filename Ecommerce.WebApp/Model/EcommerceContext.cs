@@ -20,7 +20,7 @@ public partial class EcommerceContext : DbContext
 
     public virtual DbSet<Producto> Productos { get; set; }
 
-    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Venta> Venta { get; set; }
 
@@ -77,25 +77,25 @@ public partial class EcommerceContext : DbContext
                 .HasConstraintName("FK__Producto__IdCate__3A81B327");
         });
 
-        modelBuilder.Entity<Usuario>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__5B65BF974A043FFC");
+            entity.HasKey(e => e.UserId).HasName("PK__Usuario__5B65BF974A043FFC");
 
-            entity.ToTable("Usuario");
+            entity.ToTable("Users");
 
-            entity.Property(e => e.Clave)
+            entity.Property(e => e.Password)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Correo)
+            entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.FechaCreacion)
+            entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.NombreCompleto)
+            entity.Property(e => e.FullName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Rol)
+            entity.Property(e => e.Role)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
@@ -109,7 +109,7 @@ public partial class EcommerceContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Total).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Venta)
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Sale)
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK__Venta__IdUsuario__412EB0B6");
         });

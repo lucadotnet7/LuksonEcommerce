@@ -9,11 +9,11 @@ namespace Ecommerce.WebApp.Business.Services
     public class DashboardService : IDashboardService
     {
         private readonly ISaleRepository _saleRepository;
-        private readonly IGenericRepository<Usuario> _userRepository;
+        private readonly IGenericRepository<User> _userRepository;
         private readonly IGenericRepository<Producto> _productRepository;
 
         public DashboardService(
-            ISaleRepository saleRepository, IGenericRepository<Usuario> userRepository, 
+            ISaleRepository saleRepository, IGenericRepository<User> userRepository, 
             IGenericRepository<Producto> productRepository)
         {
             _saleRepository = saleRepository;
@@ -53,7 +53,7 @@ namespace Ecommerce.WebApp.Business.Services
 
         private int Clients()
         {
-            IQueryable<Usuario> usersQuery = _userRepository.Get(u => u.Rol.ToLower() == UserRoles.Client);
+            IQueryable<User> usersQuery = _userRepository.Get(u => u.Role!.ToLower() == UserRoles.Client);
             int clients = usersQuery.Count();
 
             return clients;

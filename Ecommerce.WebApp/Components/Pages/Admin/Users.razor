@@ -1,0 +1,110 @@
+﻿@using Blazored.Toast.Services
+@using Ecommerce.WebApp.Business.Interfaces
+@using Ecommerce.WebApp.Model.Constants
+@using Ecommerce.WebApp.Model.DTOs
+
+@page "/users"
+
+@inject IUserService userService
+@inject IToastService toastService
+@inject SweetAlertService sweetAlert
+
+<div class="row justify-content-center  mt-3">
+    <div class="col-sm-6 col-md-4 col-xl-3 mb-4">
+        <div class="d-grid gap-1 col-12 mx-auto">
+            <a class="btn btn-primary" href="/user">Nuevo usuario</a>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-8 col-xl-9 mb-4">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Buscar usuario..." @bind-value="search">
+            <button class="btn btn-outline-secondary" type="button" @onclick="(async()=> await GetUsers(search))">
+                <i class="bi bi-magnifying-glass"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row gx-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 justify-content-start mt-2">
+@if (users != null)
+{
+    foreach (var user in users)
+    {
+        <div class="col mb-5">
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <i class="bi bi-person" style="font-size:50px"></i>
+                    </div>
+                    <div class="text-start">
+                        <p class="m-1"><b>Nombre: </b>@user.FullName</p>
+                        <p class="m-1"><b>Correo: </b>@user.Email</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="row justify-content-between">
+                        <a class="col-5 btn btn-sm btn-outline-primary mt-auto" href="user/@user.UserId">
+                            <i class="bi bi-pencil fs-5"></i>
+                        </a>
+                        <button class="col-5 btn btn-sm btn-outline-danger mt-auto" @onclick="() => Delete(user)">
+                            <i class="bi bi-trash fs-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+}
+
+</div>
+
+@code {
+    private List<UserDto> users = new();
+    private string search = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUsers(search);
+    }
+
+    private async Task GetUsers(string search = "")
+    {
+        List<UserDto> usersResponse = await userService.List(UserRoles.Administrator, search);
+
+        users = usersResponse;
+    }
+
+    private async Task Delete(UserDto userDto)
+    {
+        SweetAlertResult result = await sweetAlert.FireAsync(new SweetAlertOptions
+        {
+            Title = "Estás seguro?",
+            Text = $"Eliminar usuario: {userDto.FullName}",
+            Icon = SweetAlertIcon.Warning,
+            ShowCancelButton = true,
+            ConfirmButtonText = "Sí, eliminar",
+            CancelButtonText = "Cancelar"
+        });
+
+        if (result.IsConfirmed)
+        {
+            bool wasDeleted = await userService.Delete(userDto.UserId);
+
+            if (wasDeleted)
+            {
+                await GetUsers();
+                toastService.ShowSuccess("Usuario eliminado correctamente.");
+            }
+            else
+            {
+                toastService.ShowWarning("El usuario no pudo ser eliminado.");
+            }
+        }
+    }
+}

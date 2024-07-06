@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Ecommerce.WebApp.Business.Interfaces;
 using Ecommerce.WebApp.Model.DTOs;
 using Ecommerce.WebApp.Model.Entities;
@@ -11,9 +10,9 @@ namespace Ecommerce.WebApp.Business.Services
 {
     public class UserService : IUserService
     {
-        private readonly IGenericRepository<Usuario> _repository;
+        private readonly IGenericRepository<User> _repository;
         private readonly IMapper _mapper;
-        public UserService(IGenericRepository<Usuario> repository, IMapper mapper)
+        public UserService(IGenericRepository<User> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -23,14 +22,16 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                IQueryable<Usuario> query = _repository.Get(
-                    u => u.Rol == role &&
+                IQueryable<User> query = _repository.Get(
+                    u => u.Role == role &&
                     string.Concat(
-                        u.NombreCompleto!.ToLower(), u.Correo!.ToLower()
+                        u.FullName!.ToLower(), u.Email!.ToLower()
                     )
                     .Contains(search.ToLower()));
 
-                List<UserDto> users = _mapper.Map<List<UserDto>>(await query.ToListAsync());
+                List<User> usersDb = await query.ToListAsync();
+
+                List<UserDto> users = _mapper.Map<List<UserDto>>(usersDb);
 
                 return users;
             }
@@ -44,7 +45,7 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Usuario? user = await _repository.Get(u => u.IdUsuario == id).FirstOrDefaultAsync();
+                User? user = await _repository.Get(u => u.UserId == id).FirstOrDefaultAsync();
 
                 if (user == null)
                     throw new UserException("El usuario que intenta acceder no existe.");
@@ -61,7 +62,7 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Usuario? user = await _repository.Get(u => u.Correo == request.Email && u.Clave == request.Password)
+                User? user = await _repository.Get(u => u.Email == request.Email && u.Password == request.Password)
                                         .FirstOrDefaultAsync();
 
                 if (user != null)
@@ -79,10 +80,10 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Usuario userToAdd = _mapper.Map<Usuario>(request);
-                Usuario userAdded = await _repository.Add(userToAdd);
+                User userToAdd = _mapper.Map<User>(request);
+                User userAdded = await _repository.Add(userToAdd);
 
-                if (userAdded.IdUsuario != 0)
+                if (userAdded.UserId != 0)
                     return _mapper.Map<UserDto>(userAdded);
                 else
                     throw new UserException("El usuario no pudo ser creado.");
@@ -97,16 +98,16 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Usuario? user = await _repository.Get(p => p.IdUsuario == request.UserId).FirstOrDefaultAsync();
+                User? user = await _repository.Get(p => p.UserId == request.UserId).FirstOrDefaultAsync();
 
                 if (user == null)
                     throw new UserException("El usuario que intenta actualizar no existe.");
 
-                user.NombreCompleto = request.FullName;
-                user.Correo = request.Email;
-                user.Clave = request.Password;
+                user.FullName = request.FullName;
+                user.Email = request.Email;
+                user.Password = request.Password;
 
-                Usuario updatedUser = await _repository.Update(user);
+                User updatedUser = await _repository.Update(user);
 
                 if (updatedUser == null)
                     throw new UserException("Ha ocurrido un error al intentar actualizar el usuario.");
@@ -123,7 +124,7 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Usuario? user = await _repository.Get(p => p.IdUsuario == id).FirstOrDefaultAsync();
+                User? user = await _repository.Get(p => p.UserId == id).FirstOrDefaultAsync();
 
                 if (user == null)
                     throw new UserException("El usuario que intenta eliminar no existe.");

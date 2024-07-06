@@ -1,4 +1,6 @@
-﻿using Ecommerce.WebApp.Business.Interfaces;
+﻿using Blazored.Toast;
+using CurrieTechnologies.Razor.SweetAlert2;
+using Ecommerce.WebApp.Business.Interfaces;
 using Ecommerce.WebApp.Business.Services;
 using Ecommerce.WebApp.Business.Utils.Mappers;
 using Ecommerce.WebApp.Model;
@@ -15,6 +17,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.DbConnection();
             services.EcommerceInjectionDependency();
             services.RegisterAutoMapper();
+            services.AddSweetAlert();
+            services.AddToast();
         }
 
         private static void DbConnection(this IServiceCollection services)
@@ -47,6 +51,16 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void RegisterAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperProfile));
+        }
+
+        private static void AddSweetAlert(this IServiceCollection services)
+        {
+            services.AddSweetAlert2();
+        }
+
+        private static void AddToast(this IServiceCollection services)
+        {
+            services.AddBlazoredToast();
         }
     }
 }

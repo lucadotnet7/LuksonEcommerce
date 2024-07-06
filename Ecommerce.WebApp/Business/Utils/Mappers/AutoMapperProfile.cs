@@ -8,9 +8,9 @@ namespace Ecommerce.WebApp.Business.Utils.Mappers
     {
         public AutoMapperProfile()
         {
-            CreateMap<Usuario, UserDto>();
-            CreateMap<Usuario, SessionDto>();
-            CreateMap<UserDto, Usuario>();
+            CreateMap<User, UserDto>();
+            CreateMap<User, SessionDto >();
+            CreateMap<UserDto, User>();
 
             CreateMap<Categoria, CategoryDto>();
             CreateMap<CategoryDto, Categoria>();
