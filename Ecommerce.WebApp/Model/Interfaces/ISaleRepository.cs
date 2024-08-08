@@ -2,8 +2,8 @@
 
 namespace Ecommerce.WebApp.Model.Interfaces
 {
-    public interface ISaleRepository : IGenericRepository<Venta>
+    public interface ISaleRepository : IGenericRepository<Sale>
     {
-        Task<Venta> Register(Venta sale);
+        Task<Sale> Register(Sale sale);
     }
 }

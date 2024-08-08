@@ -4,26 +4,26 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ecommerce.WebApp.Model.Repositories
 {
-    public class SaleRepository : GenericRepository<Venta>, ISaleRepository
+    public class SaleRepository : GenericRepository<Sale>, ISaleRepository
     {
         public SaleRepository(EcommerceContext context) : base(context)
         {       
         }
 
-        public async Task<Venta> Register(Venta sale)
+        public async Task<Sale> Register(Sale sale)
         {
-            Venta generatedSale = new();
+            Sale generatedSale = new();
 
             using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    foreach (DetalleVenta saleDetail in sale.DetalleVenta)
+                    foreach (SaleDetail saleDetail in sale.SaleDetail)
                     {
-                        Producto product = _context.Productos.Where(p => p.IdProducto == saleDetail.IdProducto).First();
+                        Product product = _context.Products.Where(p => p.Id == saleDetail.ProductId).First();
 
-                        product.Cantidad -= saleDetail.Cantidad;
-                        _context.Productos.Update(product);
+                        product.Quantity -= saleDetail.Quantity;
+                        _context.Products.Update(product);
                     }
 
                     await _context.SaveChangesAsync();

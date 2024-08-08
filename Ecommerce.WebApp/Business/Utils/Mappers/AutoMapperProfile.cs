@@ -12,18 +12,18 @@ namespace Ecommerce.WebApp.Business.Utils.Mappers
             CreateMap<User, SessionDto >();
             CreateMap<UserDto, User>();
 
-            CreateMap<Categoria, CategoryDto>();
-            CreateMap<CategoryDto, Categoria>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto, Category>();
 
-            CreateMap<Producto, ProductDto>();
-            CreateMap<ProductDto, Producto>()
-                .ForMember(x => x.IdCategoriaNavigation, opt => opt.Ignore());
+            CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>()
+                .ForMember(x => x.CategoryIdNavigation, opt => opt.Ignore());
 
-            CreateMap<DetalleVenta, SaleDetailDto>();
-            CreateMap<SaleDetailDto, DetalleVenta>();
+            CreateMap<SaleDetail, SaleDetailDto>();
+            CreateMap<SaleDetailDto, SaleDetail>();
 
-            CreateMap<Venta, SaleDto>();
-            CreateMap<SaleDto, Venta>();
+            CreateMap<Sale, SaleDto>();
+            CreateMap<SaleDto, Sale>();
         }
     }
 }

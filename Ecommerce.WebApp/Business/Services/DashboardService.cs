@@ -10,11 +10,11 @@ namespace Ecommerce.WebApp.Business.Services
     {
         private readonly ISaleRepository _saleRepository;
         private readonly IGenericRepository<User> _userRepository;
-        private readonly IGenericRepository<Producto> _productRepository;
+        private readonly IGenericRepository<Product> _productRepository;
 
         public DashboardService(
             ISaleRepository saleRepository, IGenericRepository<User> userRepository, 
-            IGenericRepository<Producto> productRepository)
+            IGenericRepository<Product> productRepository)
         {
             _saleRepository = saleRepository;
             _userRepository = userRepository;
@@ -37,7 +37,7 @@ namespace Ecommerce.WebApp.Business.Services
 
         private string Revenue()
         {
-            IQueryable<Venta> salesQuery = _saleRepository.Get();
+            IQueryable<Sale> salesQuery = _saleRepository.Get();
             decimal? revenues = salesQuery.Sum(s => s.Total);
 
             return revenues != null ? revenues.ToString()! : "0";
@@ -45,7 +45,7 @@ namespace Ecommerce.WebApp.Business.Services
 
         private int Sales()
         {
-            IQueryable<Venta> salesQuery = _saleRepository.Get();
+            IQueryable<Sale> salesQuery = _saleRepository.Get();
             int sales = salesQuery.Count();
 
             return sales;
@@ -61,7 +61,7 @@ namespace Ecommerce.WebApp.Business.Services
 
         private int Products()
         {
-            IQueryable<Producto> productsQuery = _productRepository.Get();
+            IQueryable<Product> productsQuery = _productRepository.Get();
             int products = productsQuery.Count();
 
             return products;

@@ -10,10 +10,10 @@ namespace Ecommerce.WebApp.Business.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IGenericRepository<Categoria> _repository;
+        private readonly IGenericRepository<Category> _repository;
         private readonly IMapper _mapper;
         
-        public CategoryService(IGenericRepository<Categoria> repository, IMapper mapper)
+        public CategoryService(IGenericRepository<Category> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -23,8 +23,8 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                IQueryable<Categoria> query = _repository.Get(c =>
-                        c.Nombre!.ToLower()
+                IQueryable<Category> query = _repository.Get(c =>
+                        c.Name!.ToLower()
                         .Contains(search.ToLower())
                 );
 
@@ -42,7 +42,7 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Categoria? category = await _repository.Get(c => c.IdCategoria == id).FirstOrDefaultAsync();
+                Category? category = await _repository.Get(c => c.Id == id).FirstOrDefaultAsync();
 
                 if (category == null)
                     throw new CategoryException("La categoría que intenta acceder no existe.");
@@ -59,10 +59,10 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Categoria categoryToAdd = _mapper.Map<Categoria>(request);
-                Categoria categoryAdded = await _repository.Add(categoryToAdd);
+                Category categoryToAdd = _mapper.Map<Category>(request);
+                Category categoryAdded = await _repository.Add(categoryToAdd);
 
-                if (categoryAdded.IdCategoria != 0)
+                if (categoryAdded.Id != 0)
                     return _mapper.Map<CategoryDto>(categoryAdded);
                 else
                     throw new CategoryException("La categoría no pudo ser creada.");
@@ -77,14 +77,14 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Categoria? category = await _repository.Get(c => c.IdCategoria == request.CategoryId).FirstOrDefaultAsync();
+                Category? category = await _repository.Get(c => c.Id == request.CategoryId).FirstOrDefaultAsync();
 
                 if (category == null)
                     throw new CategoryException("La categoría que intenta actualizar no existe.");
 
-                category.Nombre = request.Name;
+                category.Name = request.Name;
 
-                Categoria updatedCategory = await _repository.Update(category);
+                Category updatedCategory = await _repository.Update(category);
 
                 if (updatedCategory == null)
                     throw new CategoryException("Ha ocurrido un error al intentar actualizar la categoría.");
@@ -101,7 +101,7 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Categoria? category = await _repository.Get(c => c.IdCategoria == id).FirstOrDefaultAsync();
+                Category? category = await _repository.Get(c => c.Id == id).FirstOrDefaultAsync();
 
                 if (category == null)
                     throw new CategoryException("La categoría que intenta eliminar no existe.");

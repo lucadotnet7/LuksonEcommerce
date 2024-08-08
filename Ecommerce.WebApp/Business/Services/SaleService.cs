@@ -21,10 +21,10 @@ namespace Ecommerce.WebApp.Business.Services
         {
             try
             {
-                Venta sale = _mapper.Map<Venta>(request);
-                Venta generatedSale = await _repository.Register(sale);
+                Sale sale = _mapper.Map<Sale>(request);
+                Sale generatedSale = await _repository.Register(sale);
 
-                if (generatedSale.IdVenta == 0)
+                if (generatedSale.Id == 0)
                     throw new SaleException("No se pudo registrar la venta.");
 
                 return _mapper.Map<SaleDto>(generatedSale);
