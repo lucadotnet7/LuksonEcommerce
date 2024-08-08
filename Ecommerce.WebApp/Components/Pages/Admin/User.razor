@@ -1,8 +1,46 @@
-﻿@page "/user"
+﻿@using Ecommerce.WebApp.Business.Interfaces
+@using Ecommerce.WebApp.Model.DTOs
+@using ROP
+
+@page "/user"
 @page "/user/{id:int}"
 
-<h3>User</h3>
+@inject IUserService userService
+@inject SweetAlertService sweetAlert
+
+<h3>Usuario</h3>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+    private string Title { get; set; } = "Nuevo usuario";
+    private string Button { get; set; } = "Crear";
+    private UserDto ViewModel { get; set; } = new UserDto();
 
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            Title = "Editar usuario";
+            Button = "Actualizar";
+
+            Result<UserDto> result = await userService.GetById(Id);
+
+            if (!result.Success)
+            {
+                SweetAlertResult sar = await sweetAlert.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Error?",
+                    Text = $"El usuario que intenta buscar no existe.",
+                    Icon = SweetAlertIcon.Error,
+                    ShowCancelButton = false
+                });
+            }
+            else
+            {    
+                ViewModel = result.Value;
+                ViewModel.ConfirmPassword = result.Value.Password;
+            }
+        }
+    }
 }

@@ -5,6 +5,7 @@ using Ecommerce.WebApp.Model.Entities;
 using Ecommerce.WebApp.Model.Exceptions;
 using Ecommerce.WebApp.Model.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ROP;
 
 namespace Ecommerce.WebApp.Business.Services
 {
@@ -41,14 +42,14 @@ namespace Ecommerce.WebApp.Business.Services
             }
         }
         
-        public async Task<UserDto> GetById(int id)
+        public async Task<Result<UserDto>> GetById(int id)
         {
             try
             {
                 User? user = await _repository.Get(u => u.UserId == id).FirstOrDefaultAsync();
 
                 if (user == null)
-                    throw new UserException("El usuario que intenta acceder no existe.");
+                    return Result.Failure<UserDto>("El usuario que intenta acceder no existe.");
                 
                 return _mapper.Map<UserDto>(user);
             }
